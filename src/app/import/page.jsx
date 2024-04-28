@@ -1,8 +1,8 @@
 'use client'
 import Image from "next/image";
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '@/app/Context/nextauth';
-import XLSXUploader from '@/components/uploadComponent/uploadComponent'
+import DirectoryPicker from "@/components/DirectoryPicker"
 import { useRouter } from "next/navigation";
 
 
@@ -18,9 +18,11 @@ export default function Import() {
   if (!signed) {
     return router.push('/');
   }
+
   return (
-    <main>
-      <XLSXUploader/>  
-    </main>
+    <div className="container mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-4">Selecionar Diretório</h1>
+      <DirectoryPicker />
+    </div>
   );
 }
