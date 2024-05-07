@@ -12,17 +12,18 @@ export async function GET(req) {
         });
     
         const query = `
-        SELECT DISTINCT nome_turma
-        FROM aluno;        
+        SELECT DISTINCT id, nome_turma
+        FROM turma;        
         `;
     
         const result = await db.all(query);
 
         // Extrai apenas os nomes das turmas do resultado
-        const turmasDisponiveis = result.map((row) => row.Turma);
+        //const turmasDisponiveis = result.map((row) => row.nome_turma);
+        console.log("turmasDisponiveis_api: ", result)
 
         // Retorna a lista de turmas disponíveis como JSON
-        return NextResponse.json(turmasDisponiveis);
+        return NextResponse.json(result);
     }
     catch (error) {
         console.error(error);
