@@ -19,7 +19,7 @@ export default function DirectoryPicker() {
     console.log('Dados enviados para a API:', extractedNames); // Apenas para verificar o que está sendo enviado
   
     try {
-      const response = await fetch('/api/turmas', {
+      const response = await fetch('/api/importador/turma', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

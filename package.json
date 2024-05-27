@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
+    "@react-pdf/renderer": "^3.4.4",
     "antd": "^5.16.4",
     "csvtojson": "^2.0.10",
     "firebase": "^10.11.0",
