@@ -221,9 +221,14 @@ export default function TabelaAlunos() {
       }
     }
 
-    tableRef.current.addEventListener("keydown", handleKeyDown);
+    if (tableRef.current) {
+      tableRef.current.addEventListener("keydown", handleKeyDown);
+    }
+
     return () => {
-      tableRef.current.removeEventListener("keydown", handleKeyDown);
+      if (tableRef.current) {
+        tableRef.current.removeEventListener("keydown", handleKeyDown);
+      }
     };
   }, [alunos, disciplinas]);
 

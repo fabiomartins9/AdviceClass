@@ -1,58 +1,51 @@
-import React, { useState } from 'react';
-import { Button, message } from 'antd';
+import { useState } from 'react';
 
-export default function DirectoryPicker() {
-  const [fileNames, setFileNames] = useState([]);
+const UploadComponent = () => {
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState('');
 
-  async function handlePastaSelecionada(event) {
-    const files = event.target.files;
-    const extractedNames = [];
-  
-    for (let i = 0; i < files.length; i++) {
-      const fileName = files[i].name.replace(/\.[^/.]+$/, ''); // Remove a extensão do nome do arquivo
-      extractedNames.push(fileName);
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      setMessage('Please select a file first');
+      return;
     }
   
-    setFileNames(extractedNames);
-    
-    // Enviando os nomes dos arquivos para a API
-    console.log('Dados enviados para a API:', extractedNames); // Apenas para verificar o que está sendo enviado
+    const formData = new FormData();
+    formData.append('file', file);
   
     try {
-      const response = await fetch('/api/importador/turma', {
+      const res = await fetch('/api/upload', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(extractedNames), // Envie a array de strings diretamente
+        body: formData,
       });
   
-      if (response.ok) {
-        message.success('Nomes dos arquivos inseridos com sucesso na tabela turma.');
+      if (res.ok) {
+        setMessage('File uploaded successfully');
       } else {
-        message.error('Erro ao inserir os nomes dos arquivos na tabela turma.');
+        const errorMessage = await res.text();
+        setMessage(`Error: ${errorMessage}`);
       }
     } catch (error) {
-      console.error('Erro ao fazer a requisição para a API:', error);
-      message.error('Erro ao conectar-se à API.');
+      setMessage(`Error: ${error.message}`);
     }
-  }
+  };
   
 
   return (
     <div>
-      <h2>Selecione uma pasta</h2>
-      <input
-        type="file"
-        directory=""
-        webkitdirectory=""
-        onChange={handlePastaSelecionada}
-      />
-      <ul>
-        {fileNames.map((fileName, index) => (
-          <li key={index}>{fileName}</li>
-        ))}
-      </ul>
+      <h1>Upload Database</h1>
+      <form onSubmit={handleUpload}>
+        <input type="file" onChange={handleFileChange} />
+        <button type="submit">Upload</button>
+      </form>
+      {message && <p>{message}</p>}
     </div>
   );
-}
+};
+
+export default UploadComponent;

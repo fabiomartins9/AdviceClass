@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 export async function GET(req) {
     try {
         const db = await open({
-          filename: "src/app/dataBase/database.sqlite",
+          filename: "public/uploads/escola.db",
           driver: sqlite3.Database,
         });
     

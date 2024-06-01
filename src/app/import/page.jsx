@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useContext, useState } from 'react';
 import { AuthContext } from '@/app/Context/nextauth';
-import DirectoryPicker from "@/components/DirectoryPicker"
+import UploadComponent from "@/components/DirectoryPicker"
 import { useRouter } from "next/navigation";
 
 
@@ -22,7 +22,7 @@ export default function Import() {
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-3xl font-bold mb-4">Selecionar Diretório</h1>
-      <DirectoryPicker />
+      <UploadComponent />
     </div>
   );
 }
