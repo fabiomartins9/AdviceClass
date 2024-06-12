@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
 
@@ -7,6 +7,8 @@ const UPLOAD_DIR = path.resolve(
   "public",
   "uploads"
 );
+
+const FILE_NAME = 'escola.db';
 
 export const POST = async (req) => {
   const formData = await req.formData();
@@ -19,7 +21,7 @@ export const POST = async (req) => {
       fs.mkdirSync(UPLOAD_DIR);
     }
 
-    fs.writeFileSync(path.resolve(UPLOAD_DIR, body.file.name), buffer);
+    fs.writeFileSync(path.resolve(UPLOAD_DIR, FILE_NAME), buffer);
   } else {
     return NextResponse.json({
       success: false,
@@ -28,6 +30,24 @@ export const POST = async (req) => {
 
   return NextResponse.json({
     success: true,
-    name: body.file.name,
+    name: FILE_NAME,
+  });
+};
+
+export const DELETE = async (req) => {
+  const filePath = path.resolve(UPLOAD_DIR, FILE_NAME);
+
+  if (!fs.existsSync(filePath)) {
+    return NextResponse.json({
+      success: false,
+      message: "File not found",
+    });
+  }
+
+  fs.unlinkSync(filePath);
+
+  return NextResponse.json({
+    success: true,
+    message: `File ${FILE_NAME} deleted`,
   });
 };
