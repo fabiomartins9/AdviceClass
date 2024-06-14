@@ -152,7 +152,7 @@ export default function TabelaAlunos() {
         const rowIndex = currentCell?.parentElement.rowIndex - 1;
         const cellIndex = currentCell?.cellIndex - 1;
         let nextCell;
-
+  
         switch (key) {
           case "ArrowUp":
             nextCell = tableRef.current.rows[rowIndex]?.cells[cellIndex + 1];
@@ -170,7 +170,7 @@ export default function TabelaAlunos() {
           default:
             break;
         }
-
+  
         if (nextCell) {
           const button = nextCell.querySelector("button");
           if (button) {
@@ -178,23 +178,30 @@ export default function TabelaAlunos() {
           }
         }
       }
-
+  
       if (isNumberKey || isLetterKey) {
         event.preventDefault();
         const buttons = tableRef.current.querySelectorAll("button");
-
+  
         let focusedButtonIndex = Array.from(buttons).findIndex(
           (button) => button === document.activeElement
         );
         if (focusedButtonIndex === -1) focusedButtonIndex = 0;
-
+  
         const button = buttons[focusedButtonIndex];
         const currentCell = event.target.closest("td");
         const rowIndex = currentCell?.parentElement.rowIndex - 1;
         const cellIndex = currentCell?.cellIndex - 1;
         const aluno = alunos[rowIndex];
         const disciplina = disciplinas[cellIndex];
-
+  
+        const stateToClass = {
+          "F": "bg-green-500",
+          "N": "bg-blue-500",
+          "NF": "bg-red-500",
+          "": ""
+        };
+  
         const newName = isNumberKey
           ? key === "0"
             ? "Selecionar"
@@ -216,19 +223,19 @@ export default function TabelaAlunos() {
             ? "Selecionar"
             : ""
           : "";
-
+  
         button.innerText = newName;
-        button.style.backgroundColor =
-          newName === "F"
-            ? "green"
-            : newName === "N"
-            ? "blue"
-            : newName === "NF"
-            ? "red"
-            : "";
-
+  
+        // Remove todas as classes de estado
+        button.classList.remove("bg-green-500", "bg-blue-500", "bg-red-500");
+  
+        // Adiciona a classe correspondente ao novo estado
+        if (stateToClass[newName]) {
+          button.classList.add(stateToClass[newName]);
+        }
+  
         const alunoDisciplinaKey = `${aluno}_${disciplina}`;
-
+  
         const updatedValues = {
           ...updatedButtonValues,
           [aluno]: {
@@ -241,17 +248,18 @@ export default function TabelaAlunos() {
         console.log("updatedValues: ", updatedValues);
       }
     }
-
+  
     if (tableRef.current) {
       tableRef.current.addEventListener("keydown", handleKeyDown);
     }
-
+  
     return () => {
       if (tableRef.current) {
         tableRef.current.removeEventListener("keydown", handleKeyDown);
       }
     };
   }, [alunos, disciplinas, updatedButtonValues]);
+  
 
   const handleDisciplinaClick = (aluno, disciplina) => {
     // chave unica aluno_disciplina
@@ -295,65 +303,65 @@ export default function TabelaAlunos() {
 
   return (
     <div>
-      <div className="mb-4">
-        <span>Selecione o coordenador:</span>
-        <select
-          className="p-2"
-          value={selectedCoordenador}
-          onChange={handleCoordenadorChange}
-        >
-          <option value="">Selecione um Coordenador</option>
-          {coordenadores.map(({ id, nome }) => (
-            <option className="text-black" key={id} value={nome}>
-              {nome}
-            </option>
-          ))}
-        </select>
-      </div>
+      <div className="flex gap-4">
+  <div className="w-1/3 mb-4 bg-white rounded-lg shadow-md">
+    <span className="block mb-2 px-2 py-1 bg-blue-500 text-white rounded-t-lg">Selecione o coordenador:</span>
+    <select
+      className="p-2 w-full border border-blue-500 rounded-b-lg"
+      value={selectedCoordenador}
+      onChange={handleCoordenadorChange}
+    >
+      <option value="">Selecione um Coordenador</option>
+      {coordenadores.map(({ id, nome }) => (
+        <option key={id} value={nome}>{nome}</option>
+      ))}
+    </select>
+  </div>
 
-      <div className="mb-4">
-        <span>Selecione o diretor: </span>
-        <select
-          className="p-2"
-          value={selectedDiretor}
-          onChange={handleDiretorChange}
-        >
-          <option value="">Selecione um Diretor</option>
-          {diretores.map(({ id, nome }) => (
-            <option className="text-black" key={id} value={nome}>
-              {nome}
-            </option>
-          ))}
-        </select>
-      </div>
+  <div className="w-1/3 mb-4 bg-white rounded-lg shadow-md">
+    <span className="block mb-2 px-2 py-1 bg-blue-500 text-white rounded-t-lg">Selecione o diretor:</span>
+    <select
+      className="p-2 w-full border border-blue-500 rounded-b-lg"
+      value={selectedDiretor}
+      onChange={handleDiretorChange}
+    >
+      <option value="">Selecione um Diretor</option>
+      {diretores.map(({ id, nome }) => (
+        <option key={id} value={nome}>{nome}</option>
+      ))}
+    </select>
+  </div>
 
-      <div className="mt-10">
-        <span>Selecione uma turma: </span>
-        <select className="p-2" value={turma} onChange={handleTurmaChange}>
-          <option value="">Selecione uma turma:</option>
-          {turmasDisponiveis.map(({ nome_turma }) => (
-            <option className="text-black" key={nome_turma} value={nome_turma}>
-              {nome_turma}
-            </option>
-          ))}
-        </select>
-      </div>
+  <div className="w-1/3 mb-4 bg-white rounded-lg shadow-md">
+    <span className="block mb-2 px-2 py-1 bg-blue-500 text-white rounded-t-lg">Selecione uma turma:</span>
+    <select
+      className="p-2 w-full border border-blue-500 rounded-b-lg"
+      value={turma}
+      onChange={handleTurmaChange}
+    >
+      <option value="">Selecione uma turma:</option>
+      {turmasDisponiveis.map(({ nome_turma }) => (
+        <option key={nome_turma} value={nome_turma}>{nome_turma}</option>
+      ))}
+    </select>
+  </div>
+</div>
 
       <div className="overflow-x-auto">
         <div className="max-h-540 overflow-y-auto overflow-x-auto mx-4">
           <table
-            ref={tableRef}
-            className="table-auto border-collapse border border-gray-500 w-full px-4"
+            ref={tableRef}            
+            className="table-auto border-collapse border border-gray-500 w-full px-4 text-xs"
           >
-            <thead className="bg-gray-200 sticky -top-px z-10">
+            <thead className="bg-gray-500 sticky -top-px z-10">
               <tr>
-                <th className="border px-2 py-2 bg-gray-200 sticky top-0 z-10">
+                <th className="border px-2 py-2 bg-gray-300 sticky top-0 z-10">
                   Nome Aluno
                 </th>
                 {disciplinas.map((disciplina, index) => (
                   <th
                     key={index}
-                    className="border px-1 py-2 text-xs bg-gray-200 sticky top-0 z-10"
+                    className="border px-1 py-2 text-xs bg-gray-300 sticky top-0 z-10"
                   >
                     {disciplina}
                   </th>
@@ -363,7 +371,7 @@ export default function TabelaAlunos() {
             <tbody>
               {alunos.map((aluno, alunoIndex) => (
                 <tr key={alunoIndex}>
-                  <td className="px-2 py-2 border border-gray-500 text-xs overflow-x-auto">
+                  <td className="px-2 py-2 border border-gray-500  bg-gray-200 style={{ fontSize: '8px' }} overflow-x-auto ">
                     <span>{aluno}</span>
                   </td>
                   {disciplinas.map((disciplina, disciplinaIndex) => {
@@ -379,28 +387,20 @@ export default function TabelaAlunos() {
                         : "Selecionar";
                     return (
                       <td key={disciplinaIndex} className="border px-1 py-2">
-                        <Button
-                          size="small"
-                          onClick={() => {
-                            handleDisciplinaClick(aluno, disciplina);
-                          }}
-                          style={{
-                            backgroundColor:
-                              buttonName === "F"
-                                ? "green"
-                                : buttonName === "N"
-                                ? "blue"
-                                : buttonName === "NF"
-                                ? "red"
-                                : "",
-                                width: '100px', // Largura fixa
-                                minWidth: '100px', // Largura mínima
-                                maxWidth: '100px' // Largura máxima
-                          }}
-                        >
-                          {buttonName}
-                        </Button>
-                      </td>
+                      <button
+                        className={`p-1 ${
+                          numCliques === 1 ? 'bg-green-500' :
+                          numCliques === 2 ? 'bg-blue-500' :
+                          numCliques === 3 ? 'bg-red-500' :
+                          ''
+                        } w-full rounded`}
+                        onClick={() => {
+                          handleDisciplinaClick(aluno, disciplina);
+                        }}
+                      >
+                        {buttonName}
+                      </button>
+                    </td>
                     );
                   })}
                 </tr>

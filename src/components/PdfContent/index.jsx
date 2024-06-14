@@ -179,9 +179,14 @@ const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, ca
   };
 
   return (
-    <div>
-      <button onClick={handleGeneratePDF}>Gerar PDF</button>
-    </div>
+    <div className="text-center mt-4">
+    <button 
+      onClick={handleGeneratePDF} 
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+    >
+      Gerar PDF
+    </button>
+  </div>
   );
 };
 
