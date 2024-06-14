@@ -3,15 +3,15 @@ import sqlite3 from "sqlite3";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
-  console.log("req.query:", req.url); // Log para verificar os parâmetros da requisição
+  
   const { searchParams } = new URL(req.url);
   const turmaEncoded = searchParams.get("turma");
   const turma = decodeURIComponent(turmaEncoded);
-  console.log("Turma:", turma); // Log para verificar os parâmetros da requisição
+  
 
   try {
     const db = await open({
-      filename: "src/app/dataBase/database.sqlite",
+      filename: "public/uploads/escola.db",
       driver: sqlite3.Database,
     });
 
@@ -27,7 +27,7 @@ export async function GET(req) {
 
 
     const nomesAlunos = result.map(({ nome_aluno }) => nome_aluno);
-    console.log("nomesAlunos: ", nomesAlunos)
+    
 
     return NextResponse.json(nomesAlunos, {
       status: 200,

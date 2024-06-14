@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 export async function GET(req) {
     try {
         const db = await open({
-          filename: "src/app/dataBase/database.sqlite",
+          filename: "public/uploads/escola.db",
           driver: sqlite3.Database,
         });
     
@@ -18,10 +18,7 @@ export async function GET(req) {
     
         const result = await db.all(query);
 
-        // Extrai apenas os nomes das turmas do resultado
-        //const turmasDisponiveis = result.map((row) => row.nome_turma);
-        console.log("turmasDisponiveis_api: ", result)
-
+        
         // Retorna a lista de turmas disponíveis como JSON
         return NextResponse.json(result);
     }
