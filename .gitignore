@@ -37,4 +37,4 @@ next-env.d.ts
 
 #uploads
 #/uploads/escola.db
-/uploadImg/brasao.png
+#/uploadImg/brasao.png
