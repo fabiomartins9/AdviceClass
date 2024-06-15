@@ -2,7 +2,7 @@
 
 import { useState, createContext, useEffect } from "react";
 import { useRouter } from "next/navigation" // Importe o hook useRouter
-import firebase from '../Services/firebaseConnection';
+import firebase from '@/app/services/firebaseConnection';
 
 export const AuthContext = createContext({})
 
