@@ -35,6 +35,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#uploads
-#/uploads/escola.db
-#/uploadImg/brasao.png
+

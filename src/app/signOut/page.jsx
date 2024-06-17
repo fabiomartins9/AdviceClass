@@ -20,7 +20,7 @@ const SignOut = () => {
   }
 
   if (!signed) {
-    router.push('/login')
+    router.push('/')
   }
 
   const handleSignOut = async () => {

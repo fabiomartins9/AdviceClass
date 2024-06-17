@@ -45,7 +45,7 @@ const fetchImageAsBase64 = (url) => {
   });
 };
 
-const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, cabecalho, tipoEnsino }) => {
+const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, cabecalho, tipoEnsino, conceitoFinal }) => {
   const [imageBase64, setImageBase64] = useState(null);
 
   useEffect(() => {
@@ -93,17 +93,26 @@ const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, ca
       console.error('Imagem não carregada corretamente');
     }
 
+    console.log("tipoEnsino_parse: ", tipoEnsino_parse)
+    console.log("CONCEITOfINAL: ", conceitoFinal)
+
     // Adicionar cabeçalho
     doc.text(`${nomeEscola}`, doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
     doc.text(`${cidade}`, doc.internal.pageSize.getWidth() / 2, 70, { align: 'center' });
     doc.text('ATA DO CONSELHO DE CLASSE E SÉRIE', doc.internal.pageSize.getWidth() / 2, 100, { align: 'center' });
+
+    if((tipoEnsino_parse.includes("EJA") || tipoEnsino_parse.includes("SERIADO")) && conceitoFinal==true){
+      doc.text(`CONCEITO FINAL DE ${dateAtual.anoAtual} - ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 140, { align: 'center' });
+    }
+    else{
     doc.text(`${bimestre}º BIMESTRE DE ${dateAtual.anoAtual} - ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 140, { align: 'center' });
+    }
 
     doc.setFontSize(12);
     doc.text(`Na data de, ${dateAtual.dataTextoFormatada}, reuniram-se os Professores e o Coordenador Pedagógico`, doc.internal.pageSize.getWidth() / 2, 180, { align: 'center' });
     doc.text(`para a realização do Conselho de Classe e Série, na forma presencial, com a presença registrada abaixo.`, doc.internal.pageSize.getWidth() / 2, 200, { align: 'center' });
 
-    doc.text(`Legendas: NF:  Nota e Falta | N:  Nota abaixo da média | F: Frequência abaixo de 75%`, doc.internal.pageSize.getWidth() / 2, 235, { align: 'center' });
+    doc.text(`Legendas: NF:  Nota e Falta | N:  Nota abaixo da média | F: Frequência abaixo de 75%  | A: Aprovado | R: Reprovado | AC: Aprovado pelo Conselho`, doc.internal.pageSize.getWidth() / 2, 235, { align: 'center' });
 
     // Extrair nomes de disciplinas e alunos
     const disciplines = new Set();

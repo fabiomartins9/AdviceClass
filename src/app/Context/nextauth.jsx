@@ -36,7 +36,7 @@ function AuthProvider({ children }) { // Adicione router como uma propriedade
             setUser(userData);
             storageUser(userData);
             setLoadingAuth(false);
-            router.push('/desktop'); // Exemplo de redirecionamento após login
+            router.push('/downloads'); // Exemplo de redirecionamento após login
         } catch (error) {
             console.log(error);
             setLoadingAuth(false);

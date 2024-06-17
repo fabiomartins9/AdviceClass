@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Input, Button } from "antd";
+import { Checkbox  } from "antd";
 import PdfGenerator from "../PdfContent";
 
 async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
@@ -56,6 +56,7 @@ export default function TabelaAlunos() {
   const [selectedDiretor, setSelectedDiretor] = useState("");
   const [cabecalho, setCabecalho] = useState([]);
   const [tipoEnsino, setTipoEnsino] = useState([]);
+  const [conceitoFinal, setConceitoFinal] = useState(false);
 
   const tableRef = useRef(null);
 
@@ -143,8 +144,8 @@ export default function TabelaAlunos() {
   useEffect(() => {
     function handleKeyDown(event) {
       const key = event.key;
-      const isNumberKey = /^[0-3]$/.test(key);
-      const isLetterKey = /^[hHjJkKLl]$/.test(key);
+      const isNumberKey = /^[0-6]$/.test(key);
+      const isLetterKey = /^[hHjJkKLluUiIoO]$/.test(key);
       const isArrowKey = /^Arrow(Up|Down|Left|Right)$/.test(key);
       if (isArrowKey && tableRef.current) {
         event.preventDefault();
@@ -199,6 +200,9 @@ export default function TabelaAlunos() {
           "F": "bg-green-500",
           "N": "bg-blue-500",
           "NF": "bg-red-500",
+          "A": "bg-green-500",
+          "AC": "bg-amber-500",
+          "R": "bg-red-500",
           "": ""
         };
   
@@ -211,6 +215,12 @@ export default function TabelaAlunos() {
             ? "N"
             : key === "3"
             ? "NF"
+            : key === "4"
+            ? "A"
+            : key === "5"
+            ? "AC"
+            : key === "6"
+            ? "R"
             : ""
           : isLetterKey
           ? key.toLowerCase() === "h"
@@ -219,8 +229,14 @@ export default function TabelaAlunos() {
             ? "N"
             : key.toLowerCase() === "k"
             ? "NF"
+            : key.toLowerCase() === "u"
+            ? "A"
+            : key.toLowerCase() === "i"
+            ? "R"
+            : key.toLowerCase() === "o"
+            ? "AC"
             : key.toLowerCase() === "l"
-            ? "Selecionar"
+            ? ""
             : ""
           : "";
   
@@ -258,7 +274,7 @@ export default function TabelaAlunos() {
         tableRef.current.removeEventListener("keydown", handleKeyDown);
       }
     };
-  }, [alunos, disciplinas, updatedButtonValues]);
+  }, [alunos, disciplinas, updatedButtonValues, turma]);
   
 
   const handleDisciplinaClick = (aluno, disciplina) => {
@@ -300,6 +316,12 @@ export default function TabelaAlunos() {
   const handleDiretorChange = (e) => {
     setSelectedDiretor(e.target.value);
   };
+  const handleConceitoFinal = (e) => {
+    console.log(`checked = ${e.target.checked}`);
+    setConceitoFinal(e.target.checked);
+  };
+
+
 
   return (
     <div>
@@ -344,6 +366,9 @@ export default function TabelaAlunos() {
         <option key={nome_turma} value={nome_turma}>{nome_turma}</option>
       ))}
     </select>
+  </div>
+  <div>
+    <Checkbox defaultChecked={false} className="" onChange={handleConceitoFinal}>Conceito Final</Checkbox>
   </div>
 </div>
 
@@ -407,8 +432,6 @@ export default function TabelaAlunos() {
               ))}
             </tbody>
           </table>
-
-          {console.log("Data: ", updatedButtonValues)}
         </div>
       </div>
       <PdfGenerator
@@ -418,6 +441,7 @@ export default function TabelaAlunos() {
         turma={turma}
         cabecalho={cabecalho}
         tipoEnsino={tipoEnsino}
+        conceitoFinal={conceitoFinal}
       />
     </div>
   );

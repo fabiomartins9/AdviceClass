@@ -15,11 +15,14 @@ export function Header() {
           </h1>
         </Link>
 
-        <div className=" flex items-baseline gap-4">
-          {signed && <Link href={"/desktop"}>Conselho</Link>}
-          {signed && <Link href={"/import"}>Importar</Link>}          
-          {!signed && <Link href={"/login"}>Entrar</Link>}
-          {signed && <Link href={"/singOut"}>Sair</Link>}
+        <div class="flex items-baseline gap-4 p-4 bg-white shadow-md rounded-lg">
+          {signed && <Link href={"/desktop"} class="text-gray-700 hover:text-blue-500 transition-colors duration-200">Conselho</Link>}
+          {signed && <Link href={"/import"} class="text-gray-700 hover:text-blue-500 transition-colors duration-200">Importar</Link>}          
+          {signed && <Link href={"/downloads"} class="text-gray-700 hover:text-blue-500 transition-colors duration-200">Downloads</Link>}          
+          {!signed && <Link href={"/login"} class="text-gray-700 hover:text-blue-500 transition-colors duration-200">Entrar</Link>}
+          {signed && <Link href={"/signOut"} class="text-gray-700 hover:text-blue-500 transition-colors duration-200">Sair</Link>}
+
+          
         </div>
       </nav>
     </header>
