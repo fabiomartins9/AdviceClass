@@ -38,3 +38,6 @@ next-env.d.ts
 #uploads
 #/uploads/escola.db
 #/uploadImg/brasao.png
+
+# Local Netlify folder
+.netlify

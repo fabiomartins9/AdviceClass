@@ -62,11 +62,9 @@ export default function TabelaAlunos() {
   useEffect(() => {
     async function fetchPessoas() {
       try {
-        const response = await fetch("/api/pessoas");
+        const response = await fetch("/.netlify/functions/pessoas");
         if (!response.ok) {
-          throw new Error(
-            `Erro ao buscar as pessoas. Status: ${response.status}`
-          );
+          throw new Error(`Erro ao buscar as pessoas. Status: ${response.status}`);
         }
         const data = await response.json();
         setCoordenadores(data.coordenadores);
@@ -75,23 +73,20 @@ export default function TabelaAlunos() {
         console.error(error);
       }
     }
-
+  
     fetchPessoas();
   }, []);
 
   useEffect(() => {
     async function fetchCabecalho() {
       try {
-        const response = await fetch(`/api/cabecalho?nomeTurma=${turma}`);
+        const response = await fetch(`/netlify/functions/cabecalho?nomeTurma=${turma}`);
         if (!response.ok) {
-          throw new Error(
-            `Erro ao buscar o cabeçalho. Status: ${response.status}`
-          );
+          throw new Error(`Erro ao buscar o cabeçalho. Status: ${response.status}`);
         }
         const data = await response.json();
         setCabecalho(data.cabecalho);
         setTipoEnsino(data.tipoEnsino);
-        
       } catch (error) {
         console.error(error);
       }
@@ -99,15 +94,14 @@ export default function TabelaAlunos() {
     fetchCabecalho();
   }, [turma]);
   
+  
 
   useEffect(() => {
     async function fetchTurmas() {
       try {
-        const response = await fetch("/api/turmaSelect");
+        const response = await fetch("/.netlify/functions/turmaSelect");
         if (!response.ok) {
-          throw new Error(
-            `Erro ao buscar as turmas. Status: ${response.status}`
-          );
+          throw new Error(`Erro ao buscar as turmas. Status: ${response.status}`);
         }
         const data = await response.json();
         setTurmasDisponiveis(data);
@@ -115,9 +109,10 @@ export default function TabelaAlunos() {
         console.error(error);
       }
     }
-
+  
     fetchTurmas();
   }, []);
+  
 
   useEffect(() => {
     if (turma && idTurma) {

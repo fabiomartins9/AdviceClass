@@ -16,25 +16,29 @@ const UploadComponent = () => {
       setMessage("Please select a file first");
       return;
     }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (res.ok) {
-        setMessage("File uploaded successfully");
-      } else {
-        const errorMessage = await res.text();
-        setMessage(`Error: ${errorMessage}`);
+  
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      try {
+        const res = await fetch('/.netlify/functions/upload-database', {
+          method: 'POST',
+          body: reader.result.split(',')[1], // Get base64 content
+          headers: {
+            'Content-Type': 'application/octet-stream'
+          }
+        });
+  
+        if (res.ok) {
+          setMessage("File uploaded successfully");
+        } else {
+          const errorMessage = await res.text();
+          setMessage(`Error: ${errorMessage}`);
+        }
+      } catch (error) {
+        setMessage(`Error: ${error.message}`);
       }
-    } catch (error) {
-      setMessage(`Error: ${error.message}`);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   return (

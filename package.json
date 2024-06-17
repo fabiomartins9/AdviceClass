@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
+    "@netlify/functions": "^2.7.0",
     "@react-pdf/renderer": "^3.4.4",
     "antd": "^5.16.4",
+    "busboy": "^1.6.0",
     "csvtojson": "^2.0.10",
     "firebase": "^10.11.0",
     "formidable": "^3.5.1",

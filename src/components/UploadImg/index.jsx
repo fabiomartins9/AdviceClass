@@ -11,47 +11,46 @@ const UploadImgForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+  
     if (!selectedFile) {
       setMessage("Nenhum arquivo selecionado.");
       return;
     }
-
-    if (!selectedFile.type.startsWith('image/')) {
-      setMessage("Por favor, selecione um arquivo de imagem.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('image', selectedFile);
-
-    try {
-      const response = await fetch('/api/uploadImg', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro ao fazer upload da imagem.");
+  
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      try {
+        const response = await fetch('/.netlify/functions/upload-image', {
+          method: 'POST',
+          body: reader.result.split(',')[1], // Get base64 content
+          headers: {
+            'Content-Type': 'application/octet-stream'
+          }
+        });
+  
+        if (!response.ok) {
+          throw new Error("Erro ao fazer upload da imagem.");
+        }
+  
+        const result = await response.json();
+        setMessage(result.message || "Imagem carregada com sucesso.");
+      } catch (error) {
+        setMessage(error.message);
       }
-
-      const result = await response.json();
-      setMessage(result.message || "Imagem carregada com sucesso.");
-    } catch (error) {
-      setMessage(error.message);
-    }
+    };
+    reader.readAsDataURL(selectedFile);
   };
 
   const handleDeleteImage = async () => {
     try {
-      const response = await fetch('/api/uploadImg', {
+      const response = await fetch('/.netlify/functions/delete-image', {
         method: 'DELETE',
       });
-
+  
       if (!response.ok) {
         throw new Error("Erro ao deletar a imagem.");
       }
-
+  
       const result = await response.json();
       setMessage(result.message || "Imagem deletada com sucesso.");
     } catch (error) {

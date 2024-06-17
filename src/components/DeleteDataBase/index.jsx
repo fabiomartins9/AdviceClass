@@ -4,15 +4,15 @@ import{Button} from 'antd'
 const DeleteDatabase = () => {
   const handleDelete = async () => {
     const userConfirmed = window.confirm('Você realmente quer apagar o arquivo escola.db?');
-    
+  
     if (userConfirmed) {
       try {
-        const response = await fetch('/api/upload', {
+        const response = await fetch('/.netlify/functions/delete-database', {
           method: 'DELETE',
         });
-
+  
         const result = await response.json();
-
+  
         if (result.success) {
           alert('Arquivo escola.db deletado com sucesso!');
         } else {
