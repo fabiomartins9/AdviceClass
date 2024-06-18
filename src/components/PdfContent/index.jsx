@@ -45,7 +45,7 @@ const fetchImageAsBase64 = (url) => {
   });
 };
 
-const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, cabecalho, tipoEnsino, conceitoFinal }) => {
+const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, cabecalho, tipoEnsino, conceitoFinal, disciplinas }) => {
   const [imageBase64, setImageBase64] = useState(null);
 
   useEffect(() => {
@@ -101,11 +101,11 @@ const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, ca
     doc.text(`${cidade}`, doc.internal.pageSize.getWidth() / 2, 70, { align: 'center' });
     doc.text('ATA DO CONSELHO DE CLASSE E SÉRIE', doc.internal.pageSize.getWidth() / 2, 100, { align: 'center' });
 
-    if((tipoEnsino_parse.includes("EJA") || tipoEnsino_parse.includes("SERIADO")) && conceitoFinal==true){
+    if(conceitoFinal==true){
       doc.text(`CONCEITO FINAL DE ${dateAtual.anoAtual} - ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 140, { align: 'center' });
     }
     else{
-    doc.text(`${bimestre}º BIMESTRE DE ${dateAtual.anoAtual} - ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 140, { align: 'center' });
+      doc.text(`${bimestre}º BIMESTRE DE ${dateAtual.anoAtual} - ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 140, { align: 'center' });
     }
 
     doc.setFontSize(12);
@@ -114,20 +114,26 @@ const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, ca
 
     doc.text(`Legendas: NF:  Nota e Falta | N:  Nota abaixo da média | F: Frequência abaixo de 75%  | A: Aprovado | R: Reprovado | AC: Aprovado pelo Conselho`, doc.internal.pageSize.getWidth() / 2, 235, { align: 'center' });
 
-    // Extrair nomes de disciplinas e alunos
-    const disciplines = new Set();
-    const students = Object.keys(updatedButtonValues);
-    for (const student of students) {
-      for (const discipline in updatedButtonValues[student]) {
-        disciplines.add(discipline);
+    // Criar cabeçalho da tabela
+    let columns = ['Nome'];
+    if (conceitoFinal) {
+      // Disciplinas fixas fornecidas pela props
+      columns = columns.concat(disciplinas);
+    } else {
+      // Extrair nomes de disciplinas de updatedButtonValues
+      const disciplines = new Set();
+      const students = Object.keys(updatedButtonValues);
+      for (const student of students) {
+        for (const discipline in updatedButtonValues[student]) {
+          disciplines.add(discipline);
+        }
       }
+      columns = columns.concat([...disciplines].sort());
     }
-
-    // Criar cabeçalho da tabela com nomes de disciplinas
-    const columns = ['Nome'].concat([...disciplines].sort());
 
     // Criar linhas da tabela com dados dos alunos
     const rows = [];
+    const students = Object.keys(updatedButtonValues);
     for (const student of students) {
       const row = [student];
       for (const discipline of columns.slice(1)) {
@@ -183,19 +189,20 @@ const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, ca
     doc.text('______________________', 550, 170);
 
     doc.text(`${bimestre}º BIMESTRE DE ${dateAtual.anoAtual} - ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 570, { align: 'center' });
+
     // Salvar o documento
     doc.save(generatePDFFileName());
   };
 
   return (
     <div className="text-center mt-4">
-    <button 
-      onClick={handleGeneratePDF} 
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-    >
-      Gerar PDF
-    </button>
-  </div>
+      <button 
+        onClick={handleGeneratePDF} 
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      >
+        Gerar PDF
+      </button>
+    </div>
   );
 };
 
