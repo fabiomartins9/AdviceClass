@@ -284,7 +284,7 @@ export default function TabelaAlunos() {
     const numCliques = (numCliquesCelula[disciplinaKey] || 0) + 1;
     const newNumCliquesCelula = {
       ...numCliquesCelula,
-      [disciplinaKey]: numCliques % 4,
+      [disciplinaKey]: numCliques % 7,
     };
 
     console.log("newNumCliquesCelula: ", newNumCliquesCelula);
@@ -298,7 +298,13 @@ export default function TabelaAlunos() {
         ? "N"
         : numCliques === 3
         ? "NF"
-        : "Selecionar";
+        : numCliques === 4
+        ? "A"
+        : numCliques === 5
+        ? "R"
+        : numCliques === 6
+        ? "AC"
+        : "";
     const updatedValues = {
       ...updatedButtonValues,
       [aluno]: {
@@ -409,6 +415,12 @@ export default function TabelaAlunos() {
                         ? "N"
                         : numCliques === 3
                         ? "NF"
+                        : numCliques === 4
+                        ? "A"
+                        : numCliques === 5
+                        ? "R"
+                        : numCliques === 6
+                        ? "AC"
                         : "Selecionar";
                     return (
                       <td key={disciplinaIndex} className="border px-1 py-2">
@@ -417,6 +429,9 @@ export default function TabelaAlunos() {
                           numCliques === 1 ? 'bg-green-500' :
                           numCliques === 2 ? 'bg-blue-500' :
                           numCliques === 3 ? 'bg-red-500' :
+                          numCliques === 4 ? 'bg-green-600' :
+                          numCliques === 5 ? 'bg-amber-600' :
+                          numCliques === 6 ? 'bg-blue-600' :
                           ''
                         } w-full rounded`}
                         onClick={() => {
@@ -442,6 +457,7 @@ export default function TabelaAlunos() {
         cabecalho={cabecalho}
         tipoEnsino={tipoEnsino}
         conceitoFinal={conceitoFinal}
+        disciplinas={disciplinas}
       />
     </div>
   );

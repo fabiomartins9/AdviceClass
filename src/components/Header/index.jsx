@@ -15,7 +15,7 @@ export function Header() {
           </h1>
         </Link>
 
-        <div class="flex items-baseline gap-4 p-4 bg-white shadow-md rounded-lg">
+        <div className="flex items-baseline gap-4 p-4 bg-white shadow-md rounded-lg">
           {signed && <Link href={"/desktop"} class="text-gray-700 hover:text-blue-500 transition-colors duration-200">Conselho</Link>}
           {signed && <Link href={"/import"} class="text-gray-700 hover:text-blue-500 transition-colors duration-200">Importar</Link>}          
           {signed && <Link href={"/downloads"} class="text-gray-700 hover:text-blue-500 transition-colors duration-200">Downloads</Link>}          

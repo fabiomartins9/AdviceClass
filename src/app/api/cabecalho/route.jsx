@@ -13,7 +13,7 @@ export async function GET(req) {
     // Parse the URL to get query parameters
     const { query } = parse(req.url, true);
     const nomeTurma = query.nomeTurma;
-    console.log("nome_turma: ", nomeTurma)
+    //console.log("nome_turma: ", nomeTurma)
 
     if (!nomeTurma) {
       return NextResponse.json(
@@ -42,8 +42,8 @@ export async function GET(req) {
     `;
     const tipoEnsino = await db.get(queryTipoEnsino, [nomeTurma]);
 
-    console.log("cabecalho: ", cabecalho);
-    console.log("tipoEnsino: ", tipoEnsino);
+    //console.log("cabecalho: ", cabecalho);
+    //console.log("tipoEnsino: ", tipoEnsino);
 
     return NextResponse.json({
       cabecalho,
