@@ -16,7 +16,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
       }
       const dataAlunos = await responseAlunos.json();
       setAlunos(dataAlunos);
-      console.log("Alunos: ", dataAlunos);
+      //console.log("Alunos: ", dataAlunos);
     }
   } catch (error) {
     console.error(error);
@@ -35,7 +35,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
       }
       const dataDisciplinas = await responseDisciplinas.json();
       setDisciplinas(dataDisciplinas);
-      console.log("nomesDisciplina: ", dataDisciplinas);
+      //console.log("nomesDisciplina: ", dataDisciplinas);
     }
   } catch (error) {
     console.error(error);
@@ -44,7 +44,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
 
 export default function TabelaAlunos() {
   const [alunos, setAlunos] = useState([]);
-  const [turma, setTurma] = useState(null);
+  const [turma, setTurma] = useState("");
   const [idTurma, setIdTurma] = useState(null);
   const [disciplinas, setDisciplinas] = useState([]);
   const [numCliquesCelula, setNumCliquesCelula] = useState({});
@@ -82,6 +82,7 @@ export default function TabelaAlunos() {
 
   useEffect(() => {
     async function fetchCabecalho() {
+      if(turma){
       try {
         const response = await fetch(`/api/cabecalho?nomeTurma=${turma}`);
         if (!response.ok) {
@@ -96,6 +97,7 @@ export default function TabelaAlunos() {
       } catch (error) {
         console.error(error);
       }
+    }
     }
     fetchCabecalho();
   }, [turma]);
@@ -287,7 +289,7 @@ export default function TabelaAlunos() {
       [disciplinaKey]: numCliques % 7,
     };
 
-    console.log("newNumCliquesCelula: ", newNumCliquesCelula);
+    //console.log("newNumCliquesCelula: ", newNumCliquesCelula);
 
     setNumCliquesCelula(newNumCliquesCelula);
 
@@ -323,7 +325,7 @@ export default function TabelaAlunos() {
     setSelectedDiretor(e.target.value);
   };
   const handleConceitoFinal = (e) => {
-    console.log(`checked = ${e.target.checked}`);
+    //console.log(`checked = ${e.target.checked}`);
     setConceitoFinal(e.target.checked);
   };
 

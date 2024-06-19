@@ -15,7 +15,7 @@ export default function Login() {
   
 
   const onFinish = async (values) => {
-    console.log('Received values:', values);
+    //console.log('Received values:', values);
     // Aqui você pode adicionar a lógica de autenticação
     // Após a autenticação, redirecione o usuário para outra página
     setLoading(true); // Ative o estado de loading, se necessário

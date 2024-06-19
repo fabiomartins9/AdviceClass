@@ -59,7 +59,7 @@ const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, ca
     };
 
     loadImage();
-  }, []);
+  }, [imageBase64]);
 
   const handleGeneratePDF = () => {
     let nomeEscola = '';
