@@ -1,13 +1,9 @@
-import { open } from "sqlite";
-import sqlite3 from "sqlite3";
 import { NextResponse } from "next/server";
+import { getDatabaseConnection } from '@/app/utils/db';
 
 export async function GET(req) {
   try {
-    const db = await open({
-      filename: "public/uploads/escola.db",
-      driver: sqlite3.Database,
-    });
+    const db = await getDatabaseConnection();
 
     const queryDiretores = `SELECT * FROM diretor`;
     const queryCoordenadores = `SELECT * FROM coordenadores`;

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Checkbox  } from "antd";
+import moment from "moment";
 import PdfGenerator from "../PdfContent";
 
 async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
@@ -16,7 +17,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
       }
       const dataAlunos = await responseAlunos.json();
       setAlunos(dataAlunos);
-      console.log("Alunos: ", dataAlunos);
+      //console.log("Alunos: ", dataAlunos);
     }
   } catch (error) {
     console.error(error);
@@ -35,7 +36,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
       }
       const dataDisciplinas = await responseDisciplinas.json();
       setDisciplinas(dataDisciplinas);
-      console.log("nomesDisciplina: ", dataDisciplinas);
+      //console.log("nomesDisciplina: ", dataDisciplinas);
     }
   } catch (error) {
     console.error(error);
@@ -44,7 +45,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
 
 export default function TabelaAlunos() {
   const [alunos, setAlunos] = useState([]);
-  const [turma, setTurma] = useState(null);
+  const [turma, setTurma] = useState("");
   const [idTurma, setIdTurma] = useState(null);
   const [disciplinas, setDisciplinas] = useState([]);
   const [numCliquesCelula, setNumCliquesCelula] = useState({});
@@ -56,6 +57,7 @@ export default function TabelaAlunos() {
   const [selectedDiretor, setSelectedDiretor] = useState("");
   const [cabecalho, setCabecalho] = useState([]);
   const [tipoEnsino, setTipoEnsino] = useState([]);
+  const [date, setDate] = useState("");
   const [conceitoFinal, setConceitoFinal] = useState(false);
 
   const tableRef = useRef(null);
@@ -82,6 +84,7 @@ export default function TabelaAlunos() {
 
   useEffect(() => {
     async function fetchCabecalho() {
+      if(turma){
       try {
         const response = await fetch(`/api/cabecalho?nomeTurma=${turma}`);
         if (!response.ok) {
@@ -96,6 +99,7 @@ export default function TabelaAlunos() {
       } catch (error) {
         console.error(error);
       }
+    }
     }
     fetchCabecalho();
   }, [turma]);
@@ -208,7 +212,7 @@ export default function TabelaAlunos() {
   
         const newName = isNumberKey
           ? key === "0"
-            ? "Selecionar"
+            ? ""
             : key === "1"
             ? "F"
             : key === "2"
@@ -243,7 +247,7 @@ export default function TabelaAlunos() {
         button.innerText = newName;
   
         // Remove todas as classes de estado
-        button.classList.remove("bg-green-500", "bg-blue-500", "bg-red-500");
+        button.classList.remove("bg-green-500", "bg-blue-500", "bg-red-500", "bg-amber-500", "bg-red-500",);
   
         // Adiciona a classe correspondente ao novo estado
         if (stateToClass[newName]) {
@@ -287,7 +291,7 @@ export default function TabelaAlunos() {
       [disciplinaKey]: numCliques % 7,
     };
 
-    console.log("newNumCliquesCelula: ", newNumCliquesCelula);
+    //console.log("newNumCliquesCelula: ", newNumCliquesCelula);
 
     setNumCliquesCelula(newNumCliquesCelula);
 
@@ -323,19 +327,24 @@ export default function TabelaAlunos() {
     setSelectedDiretor(e.target.value);
   };
   const handleConceitoFinal = (e) => {
-    console.log(`checked = ${e.target.checked}`);
+    //console.log(`checked = ${e.target.checked}`);
     setConceitoFinal(e.target.checked);
+  };
+
+  const handleDate = (e) => {
+    const date = moment(e.target.value).format('DD/MM/YYYY'); // Formatea la fecha a dd/mm/yyyy
+    setDate(date);
   };
 
 
 
   return (
-    <div>
-      <div className="flex gap-4">
-  <div className="w-1/3 mb-4 bg-white rounded-lg shadow-md">
-    <span className="block mb-2 px-2 py-1 bg-blue-500 text-white rounded-t-lg">Selecione o coordenador:</span>
+<div>
+    <div className="flex gap-3">
+    <div className="w-1/4 mb-4 bg-white rounded-lg shadow-md">
+    <span className="block mb-2 px-2 py-1 bg-blue-500 text-white rounded-t-lg text-xs	">Selecione o coordenador:</span>
     <select
-      className="p-2 w-full border border-blue-500 rounded-b-lg"
+      className="p-2 w-full border border-blue-500 rounded-b-lg text-xs	"
       value={selectedCoordenador}
       onChange={handleCoordenadorChange}
     >
@@ -347,9 +356,9 @@ export default function TabelaAlunos() {
   </div>
 
   <div className="w-1/3 mb-4 bg-white rounded-lg shadow-md">
-    <span className="block mb-2 px-2 py-1 bg-blue-500 text-white rounded-t-lg">Selecione o diretor:</span>
+    <span className="block mb-2 px-2 py-1 bg-blue-500 text-white rounded-t-lg text-xs	">Selecione o diretor:</span>
     <select
-      className="p-2 w-full border border-blue-500 rounded-b-lg"
+      className="p-2 w-full border border-blue-500 rounded-b-lg text-xs	"
       value={selectedDiretor}
       onChange={handleDiretorChange}
     >
@@ -361,9 +370,9 @@ export default function TabelaAlunos() {
   </div>
 
   <div className="w-1/3 mb-4 bg-white rounded-lg shadow-md">
-    <span className="block mb-2 px-2 py-1 bg-blue-500 text-white rounded-t-lg">Selecione uma turma:</span>
+    <span className="block mb-2 px-2 py-1 bg-blue-500 text-white rounded-t-lg text-xs	">Selecione uma turma:</span>
     <select
-      className="p-2 w-full border border-blue-500 rounded-b-lg"
+      className="p-2 w-full border border-blue-500 rounded-b-lg text-xs	"
       value={turma}
       onChange={handleTurmaChange}
     >
@@ -373,8 +382,14 @@ export default function TabelaAlunos() {
       ))}
     </select>
   </div>
-  <div>
-    <Checkbox defaultChecked={false} className="" onChange={handleConceitoFinal}>Conceito Final</Checkbox>
+  {/* imput data */}
+  <div className="w-1/3 mb-4 bg-white rounded-lg shadow-md">
+  <span className="block mb-2 px-2 py-1 bg-green-500 text-white rounded-t-lg text-xs	">Selecione uma data:</span>
+  <input onChange={handleDate} type="date" id="date" name="date" className="p-2 w-full border border-blue-500 rounded-b-lg text-xs	"/>
+  </div>
+  <div className="w-40 mb-4 bg-white rounded-lg items-center">
+  <span className="block mb-2 px-2 py-1 bg-orange-500 text-white rounded-t-lg text-xs	">Conceito Final:</span>
+    <Checkbox defaultChecked={false} className=" p-2 w-full border border-blue-500 rounded-b-lg text-xs items-center	" onChange={handleConceitoFinal}></Checkbox>
   </div>
 </div>
 
@@ -458,6 +473,7 @@ export default function TabelaAlunos() {
         tipoEnsino={tipoEnsino}
         conceitoFinal={conceitoFinal}
         disciplinas={disciplinas}
+        date={date}
       />
     </div>
   );

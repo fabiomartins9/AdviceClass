@@ -45,7 +45,7 @@ const fetchImageAsBase64 = (url) => {
   });
 };
 
-const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, cabecalho, tipoEnsino, conceitoFinal, disciplinas }) => {
+const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, cabecalho, tipoEnsino, conceitoFinal, disciplinas, date }) => {
   const [imageBase64, setImageBase64] = useState(null);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, ca
     };
 
     loadImage();
-  }, []);
+  }, [imageBase64]);
 
   const handleGeneratePDF = () => {
     let nomeEscola = '';
@@ -102,14 +102,16 @@ const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, ca
     doc.text('ATA DO CONSELHO DE CLASSE E SÉRIE', doc.internal.pageSize.getWidth() / 2, 100, { align: 'center' });
 
     if(conceitoFinal==true){
-      doc.text(`CONCEITO FINAL DE ${dateAtual.anoAtual} - ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 140, { align: 'center' });
+      doc.text(`CONCEITO FINAL DE ${dateAtual.anoAtual} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 140, { align: 'center' });
+      doc.text(` ${turma} -`, doc.internal.pageSize.getWidth() / 2, 160, { align: 'center' });
     }
     else{
-      doc.text(`${bimestre}º BIMESTRE DE ${dateAtual.anoAtual} - ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 140, { align: 'center' });
+      doc.text(`${bimestre}º BIMESTRE DE ${dateAtual.anoAtual} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 140, { align: 'center' });
+      doc.text(` ${turma}`, doc.internal.pageSize.getWidth() / 2, 160, { align: 'center' });
     }
 
     doc.setFontSize(12);
-    doc.text(`Na data de, ${dateAtual.dataTextoFormatada}, reuniram-se os Professores e o Coordenador Pedagógico`, doc.internal.pageSize.getWidth() / 2, 180, { align: 'center' });
+    doc.text(`Na data de, ${date}, reuniram-se os Professores e o Coordenador Pedagógico`, doc.internal.pageSize.getWidth() / 2, 180, { align: 'center' });
     doc.text(`para a realização do Conselho de Classe e Série, na forma presencial, com a presença registrada abaixo.`, doc.internal.pageSize.getWidth() / 2, 200, { align: 'center' });
 
     doc.text(`Legendas: NF:  Nota e Falta | N:  Nota abaixo da média | F: Frequência abaixo de 75%  | A: Aprovado | R: Reprovado | AC: Aprovado pelo Conselho`, doc.internal.pageSize.getWidth() / 2, 235, { align: 'center' });
@@ -169,26 +171,28 @@ const PdfGenerator = ({ updatedButtonValues, coordenadores, diretores, turma, ca
     // Adicionar uma nova página para as assinaturas
     doc.addPage();
 
-    doc.text(`Assinaturas dos professores, coordenação e direção responsáveis pela turma: ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
+    doc.text(`Assinaturas dos professores, coordenação e direção responsáveis pela turma:`, doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
+    doc.text(` ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 60, { align: 'center' });
 
     doc.setFontSize(10);
-    doc.text('PROFESSORES(AS)', 100, 80);
-    doc.text('ASSINATURA', 300, 80);
+    doc.text('PROFESSORES(AS)', 150, 100);
+    doc.text('ASSINATURA', 300, 100);
 
     // Adicionar linhas
-    for (let i = 0; i < 30; i++) {
-      const lineY = 90 + 10 + i * 15;
+    for (let i = 0; i < 20; i++) {
+      const lineY = 120 + 10 + i * 15;
       doc.line(100, lineY, 270, lineY); // Linha horizontal para professores
       doc.line(300, lineY, 390, lineY); // Linha horizontal para assinaturas
     }
 
     // Adicionar espaços para as assinaturas do coordenador e da direção
-    doc.text(`COORDENAÇÃO: ${coordenadores}`, 500, 80);
-    doc.text('______________________', 550, 100);
-    doc.text(`DIREÇÃO: ${diretores}`, 500, 150);
-    doc.text('______________________', 550, 170);
+    doc.text(`COORDENAÇÃO: ${coordenadores}`, 500, 100);
+    doc.text('______________________', 550, 120);
+    doc.text(`DIREÇÃO: ${diretores}`, 500, 170);
+    doc.text('______________________', 550, 190);
 
     doc.text(`${bimestre}º BIMESTRE DE ${dateAtual.anoAtual} - ${turma} - ${tipoEnsino_parse}`, doc.internal.pageSize.getWidth() / 2, 570, { align: 'center' });
+    
 
     // Salvar o documento
     doc.save(generatePDFFileName());

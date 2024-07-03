@@ -1,14 +1,12 @@
 import { open } from "sqlite";
-import sqlite3 from "sqlite3";
+//import sqlite3 from "sqlite3";
 import { NextResponse } from "next/server";
 import { parse } from "url";
+import { getDatabaseConnection } from '@/app/utils/db';
 
 export async function GET(req) {
   try {
-    const db = await open({
-      filename: "public/uploads/escola.db",
-      driver: sqlite3.Database,
-    });
+    const db = await getDatabaseConnection();
 
     // Parse the URL to get query parameters
     const { query } = parse(req.url, true);
