@@ -5,7 +5,7 @@
 import { Button } from "antd";
 import Head from "next/head";
 // Importe o hook `useContext` para acessar o contexto de autenticação
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 // Importe o contexto de autenticação
 import { AuthContext } from "@/app/Context/nextauth"; // Verifique o caminho do seu arquivo AuthProvider
 import { useRouter } from "next/navigation";
@@ -13,14 +13,16 @@ import { useRouter } from "next/navigation";
 const SignOut = () => {
   const { signOut } = useContext(AuthContext); // Obtenha a função signOut do contexto de autenticação
   const { signed, loading } = useContext(AuthContext);
-  const router = useRouter()
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!signed && !loading) {
+      router.push('/');
+    }
+  }, [signed, loading, router]);
 
   if (loading) {
     return <div>Carregando...</div>;
-  }
-
-  if (!signed) {
-    router.push('/')
   }
 
   const handleSignOut = async () => {

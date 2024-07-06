@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Checkbox  } from "antd";
+import moment from "moment";
 import PdfGenerator from "../PdfContent";
 
 async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
@@ -16,7 +17,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
       }
       const dataAlunos = await responseAlunos.json();
       setAlunos(dataAlunos);
-      console.log("Alunos: ", dataAlunos);
+      //console.log("Alunos: ", dataAlunos);
     }
   } catch (error) {
     console.error(error);
@@ -35,7 +36,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
       }
       const dataDisciplinas = await responseDisciplinas.json();
       setDisciplinas(dataDisciplinas);
-      console.log("nomesDisciplina: ", dataDisciplinas);
+      //console.log("nomesDisciplina: ", dataDisciplinas);
     }
   } catch (error) {
     console.error(error);
@@ -44,7 +45,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
 
 export default function TabelaAlunos() {
   const [alunos, setAlunos] = useState([]);
-  const [turma, setTurma] = useState(null);
+  const [turma, setTurma] = useState("");
   const [idTurma, setIdTurma] = useState(null);
   const [disciplinas, setDisciplinas] = useState([]);
   const [numCliquesCelula, setNumCliquesCelula] = useState({});
@@ -56,9 +57,13 @@ export default function TabelaAlunos() {
   const [selectedDiretor, setSelectedDiretor] = useState("");
   const [cabecalho, setCabecalho] = useState([]);
   const [tipoEnsino, setTipoEnsino] = useState([]);
+  const [date, setDate] = useState("");
   const [conceitoFinal, setConceitoFinal] = useState(false);
+  const [initialButtonValues, setInitialButtonValues] = useState({});
 
   const tableRef = useRef(null);
+
+  
 
   useEffect(() => {
     async function fetchPessoas() {
@@ -82,6 +87,7 @@ export default function TabelaAlunos() {
 
   useEffect(() => {
     async function fetchCabecalho() {
+      if(turma){
       try {
         const response = await fetch(`/api/cabecalho?nomeTurma=${turma}`);
         if (!response.ok) {
@@ -96,6 +102,7 @@ export default function TabelaAlunos() {
       } catch (error) {
         console.error(error);
       }
+    }
     }
     fetchCabecalho();
   }, [turma]);
@@ -126,6 +133,53 @@ export default function TabelaAlunos() {
     }
   }, [turma, idTurma]);
 
+   // Atualizando updatedButtonValues e guardando valores iniciais
+   useEffect(() => {
+    if (conceitoFinal) {
+      const buttons = tableRef.current.querySelectorAll("button");
+      buttons.forEach((button) => {
+        button.innerText = "A";
+        button.classList.remove("bg-blue-500", "bg-red-500", "bg-amber-500");
+        button.classList.add("bg-green-500");
+      });
+  
+      // Atualizando updatedButtonValues para refletir a mudança
+      const allValuesA = alunos.reduce((acc, aluno) => {
+        acc[aluno] = disciplinas.reduce((accDisc, disciplina) => {
+          accDisc[disciplina] = "A";
+          return accDisc;
+        }, {});
+        return acc;
+      }, {});
+      setUpdatedButtonValues(allValuesA);
+    }else {
+      setUpdatedButtonValues(initialButtonValues);
+      const buttons = tableRef.current.querySelectorAll("button");
+      buttons.forEach((button) => {
+        button.innerText = "Selecionar";
+        button.classList.remove("bg-blue-500", "bg-red-500", "bg-amber-500", "bg-green-500");
+      });
+      
+    }
+  }, [conceitoFinal, alunos, disciplinas, tableRef]);
+
+
+  // Guardando valores iniciais quando a turma é alterada
+  useEffect(() => {
+    if (alunos.length > 0 && disciplinas.length > 0 && !conceitoFinal) {
+      const initialValues = alunos.reduce((acc, aluno) => {
+        acc[aluno] = disciplinas.reduce((accDisc, disciplina) => {
+          accDisc[disciplina] = updatedButtonValues[aluno]?.[disciplina];
+          return accDisc;
+        }, {});
+        return acc;
+      }, {});
+      setInitialButtonValues(initialValues);
+    }
+  }, [alunos, disciplinas, conceitoFinal]);
+
+  
+
   const handleTurmaChange = (e) => {
     const selectedTurma = e.target.value;
     const selectedTurmaObject = turmasDisponiveis.find(
@@ -133,6 +187,7 @@ export default function TabelaAlunos() {
     );
 
     if (selectedTurmaObject) {
+      setUpdatedButtonValues({})
       setTurma(selectedTurmaObject.nome_turma);
       setIdTurma(selectedTurmaObject.id);
     } else {
@@ -251,6 +306,7 @@ export default function TabelaAlunos() {
         }
   
         const alunoDisciplinaKey = `${aluno}_${disciplina}`;
+
   
         const updatedValues = {
           ...updatedButtonValues,
@@ -278,6 +334,7 @@ export default function TabelaAlunos() {
   
 
   const handleDisciplinaClick = (aluno, disciplina) => {
+
     // chave unica aluno_disciplina
     const disciplinaKey = aluno + "_" + disciplina;
 
@@ -287,7 +344,7 @@ export default function TabelaAlunos() {
       [disciplinaKey]: numCliques % 7,
     };
 
-    console.log("newNumCliquesCelula: ", newNumCliquesCelula);
+    //console.log("newNumCliquesCelula: ", newNumCliquesCelula);
 
     setNumCliquesCelula(newNumCliquesCelula);
 
@@ -305,6 +362,8 @@ export default function TabelaAlunos() {
         : numCliques === 6
         ? "AC"
         : "";
+
+    
     const updatedValues = {
       ...updatedButtonValues,
       [aluno]: {
@@ -323,10 +382,14 @@ export default function TabelaAlunos() {
     setSelectedDiretor(e.target.value);
   };
   const handleConceitoFinal = (e) => {
-    console.log(`checked = ${e.target.checked}`);
+    //console.log(`checked = ${e.target.checked}`);
     setConceitoFinal(e.target.checked);
   };
 
+  const handleDate = (e) => {
+    const date = moment(e.target.value).format('DD/MM/YYYY'); // Formatea la fecha a dd/mm/yyyy
+    setDate(date);
+  };
 
 
   return (
@@ -373,8 +436,13 @@ export default function TabelaAlunos() {
       ))}
     </select>
   </div>
-  <div>
-    <Checkbox defaultChecked={false} className="" onChange={handleConceitoFinal}>Conceito Final</Checkbox>
+  <div className="w-1/3 mb-4 bg-white rounded-lg shadow-md">
+  <span className="block mb-2 px-2 py-1 bg-green-500 text-white rounded-t-lg text-xs	">Selecione uma data:</span>
+  <input onChange={handleDate} type="date" id="date" name="date" className="p-2 w-full border border-blue-500 rounded-b-lg text-xs	"/>
+  </div>
+  <div className="w-40 mb-4 bg-white rounded-lg items-center">
+  <span className="block mb-2 px-2 py-1 bg-orange-500 text-white rounded-t-lg text-xs	">Conceito Final:</span>
+    <Checkbox defaultChecked={false} className=" p-2 w-full border border-blue-500 rounded-b-lg text-xs items-center	" onChange={handleConceitoFinal}></Checkbox>
   </div>
 </div>
 
@@ -402,7 +470,9 @@ export default function TabelaAlunos() {
             <tbody>
               {alunos.map((aluno, alunoIndex) => (
                 <tr key={alunoIndex}>
-                  <td className="px-2 py-2 border border-gray-500  bg-gray-200 style={{ fontSize: '8px' }} overflow-x-auto ">
+                  
+                  
+                  <td className="px-2 py-2 border border-gray-500 bg-gray-200">
                     <span>{aluno}</span>
                   </td>
                   {disciplinas.map((disciplina, disciplinaIndex) => {
@@ -458,6 +528,7 @@ export default function TabelaAlunos() {
         tipoEnsino={tipoEnsino}
         conceitoFinal={conceitoFinal}
         disciplinas={disciplinas}
+        date={date}
       />
     </div>
   );
