@@ -1,18 +1,19 @@
-import { open } from "sqlite";
-import sqlite3 from "sqlite3";
 import { NextResponse } from "next/server";
 import { parse } from "url";
+import connectDb from "@/app/utils/connectBd";
 
 export async function GET(req) {
   try {
-    const db = await open({
-      filename: "public/uploads/escola.db",
-      driver: sqlite3.Database,
-    });
+    
+   const db = await connectDb()
 
     // Parse the URL to get query parameters
-    const { query } = parse(req.url, true);
-    const nomeTurma = query.nomeTurma;
+    // const { query } = parse(req.url, true);
+    // const nomeTurma = query.nomeTurma;
+
+    // Use a classe URL para extrair parâmetros
+    const url = new URL(req.url);
+    const nomeTurma = url.searchParams.get('nomeTurma');
     //console.log("nome_turma: ", nomeTurma)
 
     if (!nomeTurma) {

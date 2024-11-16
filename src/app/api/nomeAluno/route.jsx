@@ -1,5 +1,5 @@
-import { open } from "sqlite";
-import sqlite3 from "sqlite3";
+import connectDb from "@/app/utils/connectBd";
+
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
@@ -8,10 +8,7 @@ export async function GET(req) {
   const turma = decodeURIComponent(turmaEncoded);
 
   try {
-    const db = await open({
-      filename: "public/uploads/escola.db",
-      driver: sqlite3.Database,
-    });
+    const db = await connectDb()
 
     const query = `
     SELECT aluno.nome_aluno, aluno.numero_chamada

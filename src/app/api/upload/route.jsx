@@ -1,53 +1,40 @@
-import { NextResponse } from "next/server";
-import path from "path";
-import fs from "fs";
+import { NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
+import ini from 'ini';
 
-const UPLOAD_DIR = path.resolve(
-  process.env.ROOT_PATH || "",
-  "public",
-  "uploads"
-);
+export async function POST(req) {
+  try {
+    const body = await req.json(); // Lê o corpo da requisição
+    const { filePath } = body;
 
-const FILE_NAME = 'escola.db';
-
-export const POST = async (req) => {
-  const formData = await req.formData();
-  const body = Object.fromEntries(formData);
-  const file = body.file || null;
-
-  if (file) {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    if (!fs.existsSync(UPLOAD_DIR)) {
-      fs.mkdirSync(UPLOAD_DIR);
+    if (!filePath) {
+      return NextResponse.json(
+        { message: 'File path is missing' },
+        { status: 400 }
+      );
     }
 
-    fs.writeFileSync(path.resolve(UPLOAD_DIR, FILE_NAME), buffer);
-  } else {
-    return NextResponse.json({
-      success: false,
-    });
+    const iniFilePath = path.join(process.cwd(), 'src/app/utils/config.ini');
+
+    // Grava o caminho no arquivo .ini
+    const config = {
+      paths: {
+        databasePath: filePath,
+      },
+    };
+
+    fs.writeFileSync(iniFilePath, ini.stringify(config), 'utf-8');
+
+    // Retorna uma resposta de sucesso
+    return NextResponse.json(
+      { message: 'File path saved in .ini file' },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: `Error writing to .ini file: ${error.message}` },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({
-    success: true,
-    name: FILE_NAME,
-  });
-};
-
-export const DELETE = async (req) => {
-  const filePath = path.resolve(UPLOAD_DIR, FILE_NAME);
-
-  if (!fs.existsSync(filePath)) {
-    return NextResponse.json({
-      success: false,
-      message: "File not found",
-    });
-  }
-
-  fs.unlinkSync(filePath);
-
-  return NextResponse.json({
-    success: true,
-    message: `File ${FILE_NAME} deleted`,
-  });
-};
+}

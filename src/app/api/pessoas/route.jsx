@@ -1,22 +1,14 @@
-import { open } from "sqlite";
-import sqlite3 from "sqlite3";
 import { NextResponse } from "next/server";
+import connectDb from "@/app/utils/connectBd";
 
 export async function GET(req) {
   try {
-    const db = await open({
-      filename: "public/uploads/escola.db",
-      driver: sqlite3.Database,
-    });
-
+    const db = await connectDb()
     const queryDiretores = `SELECT * FROM diretor`;
     const queryCoordenadores = `SELECT * FROM coordenadores`;
 
     const diretores = await db.all(queryDiretores);
     const coordenadores = await db.all(queryCoordenadores);
-
-    // console.log("Coorde: ", coordenadores)
-    // console.log("Dretores: ", diretores)
 
     return NextResponse.json({
       diretores,
@@ -33,4 +25,5 @@ export async function GET(req) {
       }
     );
   }
+
 }

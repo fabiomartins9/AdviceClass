@@ -1,5 +1,4 @@
-import { open } from "sqlite";
-import sqlite3 from "sqlite3";
+import connectDb from "@/app/utils/connectBd";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
@@ -10,10 +9,7 @@ export async function GET(req) {
 
 
   try {
-    const db = await open({
-      filename: "public/uploads/escola.db",
-      driver: sqlite3.Database,
-    });
+    const db = await connectDb()
 
     const query = `
     SELECT DISTINCT

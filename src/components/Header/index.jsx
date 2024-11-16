@@ -17,7 +17,7 @@ export function Header() {
 
         <div className="flex items-baseline gap-4 p-4 bg-white shadow-md rounded-lg">
           {signed && <Link href={"/desktop"} className="text-gray-700 hover:text-blue-500 transition-colors duration-200">Conselho</Link>}
-          {signed && <Link href={"/import"} className="text-gray-700 hover:text-blue-500 transition-colors duration-200">Importar</Link>}          
+          {/* {signed && <Link href={"/import"} className="text-gray-700 hover:text-blue-500 transition-colors duration-200">Importar</Link>}           */}
           {signed && <Link href={"/downloads"} className="text-gray-700 hover:text-blue-500 transition-colors duration-200">Downloads</Link>}          
           {!signed && <Link href={"/login"} className="text-gray-700 hover:text-blue-500 transition-colors duration-200">Entrar</Link>}
           {signed && <Link href={"/signOut"} className="text-gray-700 hover:text-blue-500 transition-colors duration-200">Sair</Link>}

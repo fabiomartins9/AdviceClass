@@ -29,6 +29,7 @@ async function fetchData(turma, idTurma, setAlunos, setDisciplinas) {
         idTurma
       )}`;
       const responseDisciplinas = await fetch(apiUrlDisciplinas);
+      //const responseDisciplinas = await fetch(apiUrlDisciplinas, { cache: 'no-store' });
       if (!responseDisciplinas.ok) {
         throw new Error(
           `Erro ao buscar os dados da API de disciplinas. Status: ${responseDisciplinas.status}`
@@ -185,9 +186,11 @@ export default function TabelaAlunos() {
     const selectedTurmaObject = turmasDisponiveis.find(
       (turma) => turma.nome_turma === selectedTurma
     );
+    console.log("Disciplinas: ", disciplinas)
+    setUpdatedButtonValues({})
 
     if (selectedTurmaObject) {
-      setUpdatedButtonValues({})
+      setUpdatedButtonValues({})      
       setTurma(selectedTurmaObject.nome_turma);
       setIdTurma(selectedTurmaObject.id);
     } else {
@@ -457,7 +460,7 @@ export default function TabelaAlunos() {
                 <th className="border px-2 py-2 bg-gray-300 sticky top-0 z-10">
                   Nome Aluno
                 </th>
-                {disciplinas.map((disciplina, index) => (
+                {disciplinas.sort().map((disciplina, index) => (
                   <th
                     key={index}
                     className="border px-1 py-2 text-xs bg-gray-300 sticky top-0 z-10"
