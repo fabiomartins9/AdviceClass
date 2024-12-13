@@ -62,6 +62,10 @@ export default function TabelaAlunos() {
   const [conceitoFinal, setConceitoFinal] = useState(false);
   const [segundoSemestre, setSegundoSemestre] = useState(false);
   const [initialButtonValues, setInitialButtonValues] = useState({});
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null); // Para armazenar a linha selecionada
+  const [hoveredRowIndex, setHoveredRowIndex] = useState(null); // Para armazenar a linha em que o cursor está sobre
+
+
 
   const tableRef = useRef(null);
 
@@ -481,9 +485,16 @@ export default function TabelaAlunos() {
             </thead>
             <tbody>
               {alunos.map((aluno, alunoIndex) => (
-                <tr key={alunoIndex}>
-                  
-                  
+                <tr 
+                  key={alunoIndex}                  
+                  onClick={() => setSelectedRowIndex(alunoIndex)} // Seleciona a linha
+                  onMouseEnter={() => setHoveredRowIndex(alunoIndex)} // Destaca a linha ao passar o mouse
+                  onMouseLeave={() => setHoveredRowIndex(null)} // Remove o destaque ao sair com o mouse
+                  className={`
+                    ${selectedRowIndex === alunoIndex ? "bg-blue-300" : ""}
+                    ${hoveredRowIndex === alunoIndex && selectedRowIndex !== alunoIndex ? "bg-gray-300" : ""}
+                  `}
+                  >
                   <td className="px-2 py-2 border border-gray-500 bg-gray-200">
                     <span>{aluno}</span>
                   </td>
